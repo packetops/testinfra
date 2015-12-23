@@ -1,0 +1,5 @@
+testinfra (1.0.0~a20-1) unstable; urgency=low
+
+  * Initial debianization
+
+ -- Philippe Pepiot <phil@philpep.org>  Wed, 23 Dec 2015 01:07:42 +0100

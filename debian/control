@@ -1,0 +1,73 @@
+Source: testinfra
+Maintainer: Philippe Pepiot <phil@philpep.org>
+Section: python
+Priority: optional
+Build-Depends:
+    debhelper (>= 9),
+    python-all,
+    python3-all,
+    python-setuptools,
+    python3-setuptools,
+    python-pbr,
+    python3-pbr,
+    python-pytest,
+    python3-pytest,
+    python-six,
+    python3-six,
+    python-sphinx,
+    python-alabaster,
+Homepage: https://github.com/philpep/testinfra
+Vcs-Browser: https://github.com/philpep/testinfra
+Vcs-Git: git://github.com/philpep/testinfra
+Standards-Version: 3.9.6
+
+Package: python-testinfra
+Architecture: all
+Depends:
+    python-pytest,
+    python-six,
+    ${misc:Depends},
+    ${python:Depends}
+Recommends: ${python:Recommends}
+Suggests:
+    python-paramiko
+Description: Test infrastructure
+ With Testinfra you can write unit tests in Python to test *actual state* of
+ your servers configured by managements tools like Salt, Ansible, Puppet,
+ Chef and so on.
+ .
+ Testinfra is written as a plugin to the powerful pytest test engine
+ .
+ This package provide support for Python 2.X
+
+Package: python3-testinfra
+Architecture: all
+Depends:
+    python3-pytest,
+    python3-six,
+    ${misc:Depends},
+    ${python3:Depends}
+Recommends: ${python3:Recommends}
+Suggests:
+    python3-paramiko
+Description: Test infrastructure
+ With Testinfra you can write unit tests in Python to test *actual state* of
+ your servers configured by managements tools like Salt, Ansible, Puppet,
+ Chef and so on.
+ .
+ Testinfra is written as a plugin to the powerful pytest test engine
+ .
+ This package provide support for Python 3.X
+
+Package: python-testinfra-doc
+Section: doc
+Architecture: all
+Depends: ${misc:Depends}, ${sphinxdoc:Depends}
+Description: Test infrastructure
+ With Testinfra you can write unit tests in Python to test *actual state* of
+ your servers configured by managements tools like Salt, Ansible, Puppet,
+ Chef and so on.
+ .
+ Testinfra is written as a plugin to the powerful pytest test engine
+ .
+ This package provides the documentation.

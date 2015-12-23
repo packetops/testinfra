@@ -1,0 +1,12 @@
+diff --git a/doc/source/conf.py b/doc/source/conf.py
+index 20e017d..6e17186 100644
+--- a/doc/source/conf.py
++++ b/doc/source/conf.py
+@@ -163,7 +163,6 @@ html_sidebars = {
+         'about.html',
+         'navigation.html',
+         'searchbox.html',
+-        'piwik.html',
+     ],
+ }
+ 
