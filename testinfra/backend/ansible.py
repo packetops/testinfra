@@ -65,8 +65,6 @@ class AnsibleBackend(base.BaseBackend):
     def run(self, command, *args):
         self._check_ansible()
 
-        print "self : %s \ncommand : %s \n args: %s" % (self,command,args)
-
         if HAS_ANSIBLE_1:
             import ansible.inventory
             import ansible.runner
@@ -95,7 +93,7 @@ class AnsibleBackend(base.BaseBackend):
                     stdout=out["stdout"], stderr=out["stderr"],
             )
             logger.info("RUN %s", result)
-            print "result %s" % result
+
             return result
 
         if HAS_ANSIBLE_2:
@@ -105,6 +103,34 @@ class AnsibleBackend(base.BaseBackend):
             from ansible.inventory import Inventory
             from ansible.playbook.play import Play
             from ansible.executor.task_queue_manager import TaskQueueManager
+            from ansible.plugins.callback import CallbackBase
+
+
+            class SilentCallbackModule(CallbackBase):
+                """ A callback module that does not print anything, but keeps tabs
+                on what's happening in an Ansible play.
+                """
+
+                def __init__(self):
+                    self.unreachable = {}
+                    self.contacted = {}
+
+                def runner_on_ok(self, host, result):
+                    self.contacted[host] = {
+                        'success': True,
+                        'result': result
+                    }
+
+                def runner_on_failed(self, host, result, ignore_errors=False):
+                    self.contacted[host] = {
+                        'success': False,
+                        'result': result
+                    }
+
+                def runner_on_unreachable(self, host, result):
+                    self.unreachable[host] = result
+
+            callback = SilentCallbackModule()
             command = self.get_command(command, *args)
             Options = namedtuple('Options', ['connection', 'module_path', 'forks', 'remote_user', 'private_key_file',
                                              'ssh_common_args', 'ssh_extra_args', 'sftp_extra_args', 'scp_extra_args',
@@ -140,19 +166,16 @@ class AnsibleBackend(base.BaseBackend):
                         loader=loader,
                         options=options,
                         passwords=passwords,
-                        stdout_callback='default',
+                        stdout_callback=callback,
                 )
-                result = tqm.run(play)
-
-                print "result: %s" % result
-
+                tqm.run(play)
 
                 ret = base.CommandResult(
-                        self, result,
-                        b"",
+                        self, 0 if callback.contacted[self.host][u'success'] else 1 ,
+                        bytes(callback.contacted[self.host][u'result']["stdout_lines"]),
                         b"",
                         command,
-                        stdout="", stderr="",
+                        stdout=callback.contacted[self.host][u'result']["stdout"], stderr=callback.contacted[self.host][u'result']["stdout"],
                 )
 
                 return ret
